@@ -11,10 +11,11 @@ calculate:
     # rbx = x
     mov %rdi, %rbx 
 
+    add $3, %rdi
+
     # a = x + 3
-    mov %rbx, %r12
-    # r12 = a
-    add $3, %r12
+    # move a to preserved so b does not nuke it
+    mov %rdi, %r12 
 
     # b = f(x,a)
     mov %rbx, %rdi
@@ -34,11 +35,6 @@ calculate:
     mov %rbx, %rdi
     mov %r14, %rsi
     call f 
-    # %rax = d
-    # %rax is not call preserved
-    # but f is not called after 
-    # this point so its safe to 
-    # use temp.
 
     # answer = a+b+c+d 
     add %r12, %rax
