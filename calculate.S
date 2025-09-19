@@ -4,42 +4,49 @@
 
 calculate:
     push %rbx 
+    push %r12
+    push %r13
+    push %r14
 
     # rbx = x
-    mov %rdi, rbx 
+    mov %rdi, %rbx 
 
     # a = x + 3
-    mov %rbx, %rsi
-    # rsi = a
-    add $3, %rsi
+    mov %rbx, %r12
+    # r12 = a
+    add $3, %r12
 
     # b = f(x,a)
-    mov %rbx, rdi
+    mov %rbx, %rdi
+    mov %r12, %rsi
     call f
-    # r8 = b
-    mov %rax, %r8
+    # r13 = b
+    mov %rax, %r13
 
-    #c = f(b, x) (for f: b=x(rdi), x=y)
-    mov %r8, rdi
+    #c = f(b, x)
+    mov %r13, %rdi
     mov %rbx, %rsi
     call f
-    # r9 = c
-    mov %rax, %r9
+    # r14 = c
+    mov %rax, %r14
 
     # d = f(x,c)
-    mov %rdx, %rdi
-    mov %r9, %rsi
+    mov %rbx, %rdi
+    mov %r14, %rsi
     call f 
-    # r10 = d
-    mov %rax, %r10
+    # %rax = d
+    # %rax is not call preserved
+    # but f is not called after 
+    # this point so its safe to 
+    # use temp.
 
     # answer = a+b+c+d 
-    mov %rsi, rax
-    add %r8, rax
-    add %r9, rax
-    add %r10, rax
+    add %r12, %rax
+    add %r13, %rax
+    add %r14, %rax
 
     pop %rbx
+    pop %r12
+    pop %r13
+    pop %r14
     ret
-
-
